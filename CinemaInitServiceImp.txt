@@ -1,0 +1,117 @@
+package com.cinema.GestionDeCinema.Service;
+
+import java.util.stream.Stream;
+
+import org.springframework.beans.factory.annotation.Autowired;
+
+import com.cinema.GestionDeCinema.DAO.CategorieRepository;
+import com.cinema.GestionDeCinema.DAO.CinemaRepository;
+import com.cinema.GestionDeCinema.DAO.FilmRepository;
+import com.cinema.GestionDeCinema.DAO.PlaceRepository;
+import com.cinema.GestionDeCinema.DAO.ProjectionRepository;
+import com.cinema.GestionDeCinema.DAO.SalleRepository;
+import com.cinema.GestionDeCinema.DAO.SeanceRepository;
+import com.cinema.GestionDeCinema.DAO.VilleRepository;
+import com.cinema.GestionDeCinema.Entities.Cinema;
+import com.cinema.GestionDeCinema.Entities.Place;
+import com.cinema.GestionDeCinema.Entities.Salle;
+import com.cinema.GestionDeCinema.Entities.Ville;
+
+import aj .org.objectweb.asm.ClassReader;
+
+public class CinemaInitServiceImp implements ICenemaInitService{
+	@Autowired
+	private VilleRepository villeRepository;
+	@Autowired
+	private CinemaRepository cinemaRepository;
+	
+	@Autowired
+	private SalleRepository salleRepository;
+	@Autowired
+	private PlaceRepository placeRepository;
+
+	
+	public void initVilles() {
+	
+	Stream.of("Teboursouk","Douz","Tataouin","Gbeli","Bizerte").forEach(nameVille->{
+		Ville ville=new Ville();
+		ville.setName(nameVille);
+		villeRepository.save(ville);
+	
+	});
+	
+	
+	}
+
+	@Override
+	public void initCinemas() {
+		villeRepository.findAll().forEach(v->{
+			Stream.of("Le Colisée","Le Parnasse","Centre Culturel Neapolis Nabeul","Salle Rayhana Bourgo Mall")
+			.forEach(nameCinema->{
+				Cinema cinema= new Cinema();
+				cinema.setName(nameCinema);
+				cinema.setNombreSalles( (int) (3+(Math.random()*7)));
+				cinema.setVille(v);
+			
+			});
+		});
+		
+	}
+
+	@Override
+	public void initSalles() {
+		cinemaRepository.findAll().forEach(cinema->{
+			for(int i=0;i<cinema.getNombreSalles();i++) {
+				Salle salle=new Salle();
+				salle.setName("Salle"+(i+1));
+				salle.setNombrePlace(15+(int)(Math.random()*20)); 
+				salleRepository.save(salle);
+			}
+		});		
+}
+	public void initPlaces() {
+		salleRepository.findAll().forEach(salle->{
+			for(int i=0;i<salle.getNombrePlace();i++) {
+				Place place=new Place();
+				place.setNumero(i+1);
+				place.setSalle(salle);
+				placeRepository.save(place);
+				
+			
+			}
+		
+		
+		});
+	}
+
+	@Override
+	public void initSeances() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void initCategories() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void initFilms() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void initProjections() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void initTickets() {
+		// TODO Auto-generated method stub
+		
+	}
+
+}
